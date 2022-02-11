@@ -12,6 +12,10 @@ import {
     Button
 } from '@mui/material';
 
+import Stack from '@mui/material/Stack';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link, useHistory } from 'react-router-dom';
@@ -69,6 +73,10 @@ const style = {
     }
 }
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function Login() {
 
     const history = useHistory();
@@ -81,6 +89,31 @@ export default function Login() {
         isLoading: false,
 
     })
+
+    const [openError, setOpenError] = React.useState(false);
+
+    const handleCloseError = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenError(false);
+    };
+
+    const [openSuccess, setOpenSuccess] = React.useState(false);
+
+    const handleCloseSuccess = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenSuccess(false);
+    };
+
+    const handleClick = () => {
+        setOpenError(true);
+        setOpenSuccess(true);
+    };
 
     const handleChange = (prop) => (e) => {
         setValues({ ...values, [prop]: e.target.value })
@@ -96,21 +129,24 @@ export default function Login() {
 
     const login = () => {
         if (!values.email || !values.password) {
-            alert("please fill up the following fields")
+            setValues({ ...values, errors: "Please Fill up the following fields", isLoading: false })
+            setOpenError(true);
         }
         else {
             const auth = getAuth();
             signInWithEmailAndPassword(auth, values.email, values.password)
                 .then((userCredential) => {
                     // Signed in 
+                    setOpenSuccess(true);
                     history.push('/home')
+
                     //   history.push('/classroom');
                     // ...
                 })
                 .catch((error) => {
                     const errorMessage = error.message;
                     setValues({ ...values, errors: errorMessage, isLoading: false, password: "" })
-                    alert(errorMessage)
+                    setOpenError(true);
                 });
         }
     }
@@ -121,6 +157,23 @@ export default function Login() {
                 <title>Login</title>
                 <link rel="Collaboration Icon" href={logohelmet} />
             </Helmet>
+            <Stack spacing={2} sx={{ width: '100%' }}>
+                <Snackbar open={openError} autoHideDuration={6000} onClose={handleCloseError}>
+                    <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
+                        {values.errors}
+                    </Alert>
+                </Snackbar>
+            </Stack>
+            <Stack spacing={2} sx={{ width: '100%' }}>
+                <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleCloseSuccess}>
+                    <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
+                        Successfully Login
+                    </Alert>
+                </Snackbar>
+            </Stack>
+
+
+
             <Box component={Grid} container sx={style.loginContainer}>
                 {/* <Box component={Grid} container justifyContent="center">
                     <Typography sx={{ fontSize: { xs: 30, md: 40 }, }}>Welcome Back!</Typography>
@@ -170,7 +223,7 @@ export default function Login() {
                     />
                 </FormControl>
                 <Grid container justifyContent="flex-end">
-                    <Typography sx={{ fontSize: 14, color: "blue", marginBottom: 1, marginTop: 1 }}>
+                    <Typography sx={{ fontSize: 14, color: "blue", marginBottom: 1, marginTop: 1 }} onClick={() => history.push('/forgot')}>
                         Forgot Password?
                     </Typography>
                 </Grid>

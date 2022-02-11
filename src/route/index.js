@@ -16,7 +16,8 @@ import PrivateRoute from './privateroute';
 import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
 import Register from '../pages/register/Register';
-import notFound from '../pages/notFound'
+import notFound from '../pages/notFound';
+import ForgotPassword from '../pages/fogot/Forgot';
 
 import theme from '../utils/theme';
 import { createTheme, ThemeProvider, Box } from '@mui/material';
@@ -91,6 +92,12 @@ export default function RouterComponent(props) {
                     <PublicRoute
                         component={Register}
                         path="/register"
+                        isAuthenticated={values.isAuthenticated}
+                        restricted={true}
+                    />
+                    <PublicRoute
+                        component={ForgotPassword}
+                        path="/forgot"
                         isAuthenticated={values.isAuthenticated}
                         restricted={true}
                     />

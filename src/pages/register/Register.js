@@ -12,6 +12,10 @@ import {
   Button
 } from '@mui/material';
 
+import Stack from '@mui/material/Stack';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { registerInitiate } from '../../redux/actions/userAction';
@@ -65,6 +69,10 @@ const style = {
   }
 }
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function Register() {
 
   const history = useHistory();
@@ -81,6 +89,34 @@ export default function Register() {
     fullName: ""
   })
 
+
+  const [openError, setOpenError] = React.useState(false);
+
+  const handleCloseError = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenError(false);
+  };
+
+  const [openSuccess, setOpenSuccess] = React.useState(false);
+
+  const handleCloseSuccess = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSuccess(false);
+  };
+
+  const handleClick = () => {
+    setOpenError(true);
+    setOpenSuccess(true);
+  };
+
+
+
   const handleChange = (prop) => (e) => {
     setValues({ ...values, [prop]: e.target.value })
   }
@@ -95,10 +131,12 @@ export default function Register() {
 
   const signup = () => {
     if (!values.email || !values.password || !values.cpass || !values.fullName) {
-      alert("please fill up the following fields")
+      setValues({ ...values, errors: "Please Fill up the following fields", isLoading: false })
+      setOpenError(true);
     }
-    else if(values.password !== values.cpass) {
-      alert("password does not match")
+    else if (values.password !== values.cpass) {
+      setValues({ ...values, errors: "password does not match", isLoading: false })
+      setOpenError(true);
     }
     else {
       const data = {
@@ -106,6 +144,7 @@ export default function Register() {
         email: values.email,
         password: values.password
       }
+      setOpenSuccess(true);
       dispatch(registerInitiate(data, history));
     }
   }
@@ -116,6 +155,21 @@ export default function Register() {
         <title>Register</title>
         <link rel="Collaboration Icon" href={logohelmet} />
       </Helmet>
+      <Stack spacing={2} sx={{ width: '100%' }}>
+        <Snackbar open={openError} autoHideDuration={6000} onClose={handleCloseError}>
+          <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
+            {values.errors}
+          </Alert>
+        </Snackbar>
+      </Stack>
+      <Stack spacing={2} sx={{ width: '100%' }}>
+        <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleCloseSuccess}>
+          <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
+            Register Successfully
+          </Alert>
+        </Snackbar>
+      </Stack>
+
       <Box component={Grid} container sx={style.loginContainer}>
         <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
           <Typography sx={{ fontSize: { xs: 30, md: 40 } }}>Create Account</Typography>
@@ -129,6 +183,7 @@ export default function Register() {
           }}
           onChange={handleChange("fullName")}
           value={values.fullName}
+          onKeyDown={(e) => e.key === 'Enter' && signup(e)}
         />
         <Typography sx={style.textStyle}>Email</Typography>
         <TextField
@@ -140,6 +195,7 @@ export default function Register() {
           }}
           value={values.email}
           onChange={handleChange("email")}
+          onKeyDown={(e) => e.key === 'Enter' && signup(e)}
         />
         <Typography sx={style.textStyle}>Password</Typography>
         <FormControl variant="outlined" fullWidth>
@@ -163,6 +219,7 @@ export default function Register() {
             inputProps={{
               sx: style.passwordFieldStyle
             }}
+            onKeyDown={(e) => e.key === 'Enter' && signup(e)}
           />
         </FormControl>
         <Typography sx={style.textStyle}>Confirm Password</Typography>
@@ -187,6 +244,7 @@ export default function Register() {
             inputProps={{
               sx: style.passwordFieldStyle
             }}
+            onKeyDown={(e) => e.key === 'Enter' && signup(e)}
           />
         </FormControl>
 
