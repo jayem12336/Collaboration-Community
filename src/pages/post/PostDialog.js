@@ -1,22 +1,20 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
     Box,
     Button,
     Grid,
     TextField,
+    Typography
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
-import { auth, db } from '../../utils/firebase';
-import { doc, onSnapshot, collection, addDoc, updateDoc, orderBy, query, getDoc } from '@firebase/firestore';
-
-
-
-import { useSelector } from "react-redux";
+import { auth, db, storage } from '../../utils/firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc } from '@firebase/firestore';
 
 const style = {
     formContainer: {
@@ -37,27 +35,46 @@ const style = {
 
 export default function PostDialog({ isPostOpen, toggleClass }) {
 
-    
-    const [values, setValues] = useState({
-        title:"",
-        desc:""
-    });
+    const [image, setImage] = useState(null);
+    const [progress, setProgress] = useState(0);
+    const [url, setUrl] = useState("")
 
-    const { user } = useSelector((state) => state);
+    const [values, setValues] = useState({
+        title: "",
+        desc: ""
+    });
 
     const [userAuth, setUserAuth] = useState("");
 
-    // const queryTimeStamp = query(colRef, orderBy("timestamp", "desc"));
+    const formHandler = (e) => {
+        e.preventDefault();
+        const file = e.target[0].files[0];
+        uploadFiles(file);
+    };
 
-    // useEffect(() => {
-    //     onSnapshot(queryTimeStamp, (snapshot) => {
-    //         setTitle(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-    //         setDesc(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-    //     }
-    //     )
+    const uploadFiles = (file) => {
+        //
+        if (!file) return;
+        const storagaRef = ref(storage, `files/${file.name}`);
+        const uploadTask = uploadBytesResumable(storagaRef, file);
 
-    // }, [])
-
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                const prog = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+                setProgress(prog);
+            },
+            (error) => console.log(error),
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    console.log("File available at", downloadURL);
+                    setUrl(downloadURL)
+                });
+            }
+        );
+    };
     const handleChange = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });
     };
@@ -68,8 +85,7 @@ export default function PostDialog({ isPostOpen, toggleClass }) {
         })
     }, [])
 
-
-    const createpost = async() => {
+    const createpost = async () => {
         if (values.title === "" || values.desc === "") {
             alert("please fill up the following fields")
         }
@@ -79,17 +95,31 @@ export default function PostDialog({ isPostOpen, toggleClass }) {
                 desc: values.desc,
                 user: userAuth.displayName,
                 timestamp: new Date(),
-
+                image: url
             });
+            setValues({ ...values, title: '', desc: '' })
+            setImage(null);
             toggleClass();
+            setProgress(0)
+            setUrl("")
         }
     }
+
+    const closeModal = () => {
+        setValues({ ...values, title: '', desc: '' });
+        setImage(null);
+        toggleClass();
+        setProgress(0)
+        setUrl("")
+    }
+
+    console.log(image)
 
     return (
         <div>
             <Dialog
                 open={isPostOpen}
-                onClose={toggleClass}
+                onClose={closeModal}
                 aria-labelledby="responsive-dialog-title"
             >
                 <DialogTitle id="responsive-dialog-title">
@@ -121,10 +151,30 @@ export default function PostDialog({ isPostOpen, toggleClass }) {
                                 sx: style.inputText
                             }}
                         />
+
+                        <Box container justifyContent="center" sx={{marginTop: 2}}>
+                            <Typography>Choose Image Here</Typography>
+                            <form onSubmit={formHandler}>
+                                <input type="file" className="input"/>
+                                <button type="submit">Preview</button>
+                            </form>
+                            <hr />
+                        </Box>
+                        {
+                            url === "" ? "" :
+                                <Box component={Grid} container justifyContent="center" sx={{ marginTop: 2 }}>
+                                    <Box
+                                        component="img"
+                                        src={url}
+                                        alt="logo"
+                                        sx={{ width: 150, height: 100 }}
+                                    />
+                                </Box>
+                        }
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={toggleClass} sx={style.btnStyle}>
+                    <Button autoFocus onClick={closeModal} sx={style.btnStyle}>
                         Cancel
                     </Button>
                     <Button onClick={createpost} autoFocus sx={style.btnStyle}>

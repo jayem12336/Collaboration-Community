@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box,
-    Button,
     AppBar,
     Toolbar,
     Grid,
@@ -9,7 +8,6 @@ import {
     Link
 } from '@mui/material';
 
-import { Link as ReactLink } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 
 import Scroll from "react-scroll";
@@ -17,18 +15,15 @@ import Scroll from "react-scroll";
 import { useTheme } from '@mui/material/styles';
 import SideDrawer from '../drawercomponent/SideDrawer';
 import Logo from '../../assets/img/png/Logohomepage.png';
-import HomeIcon from '../../assets/img/png/home.svg';
-import UserIcon from '../../assets/img/png/portrait.svg';
-import FileIcon from '../../assets/img/png/file-add.svg';
+import HomeIcon from '../../assets/img/jpg/IconHomeNew.png';
+import UserIcon from '../../assets/img/jpg/IconProfileNew.png';
+import FileIcon from '../../assets/img/jpg/IconFileNew.png';
 import PostDialog from '../../pages/post/PostDialog'
-
-
-
-
 
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
+import { useHistory } from 'react-router-dom';
 
 
 const ScrollLink = Scroll.Link;
@@ -71,20 +66,16 @@ const style = {
         marginTop: 0.5,
     },
     btnLinks: {
-        marginLeft: 15,
         fontSize: '22px',
         width: 'auto',
         textDecoration: 'none',
         color: "#fff",
         fontWeight: 500,
-        '&:hover': {
-            background: '#4877c2',
-            color: (theme) => theme.colors.navButton,
-        },
         display: 'inline-flex',
         alignItems: 'center',
         padding: '6px 8px',
-        lineHeight: '1.75'
+        lineHeight: '1.75',
+        cursor: 'pointer'
     },
     linkContainer: {
         justifyContent: 'end',
@@ -118,7 +109,14 @@ const style = {
     logoIconStyle: {
         height: 50,
         width: 50,
-        color: 'white'
+        color: 'white',
+        cursor:"pointer"
+    },
+    logoIconFile: {
+        height: 50,
+        width: 50,
+        color: 'white',
+        cursor:"pointer"
     }
 }
 
@@ -170,27 +168,18 @@ export default function Navbar() {
 
     const theme = useTheme();
 
+    const history = useHistory();
+
     const matchMD = useMediaQuery(theme.breakpoints.up('md'));
 
     const navRef = React.useRef();
     navRef.current = navBackground
-
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
 
     const [postOpen, setPostOpen] = useState(false);
 
     const handleOpenPost = () => {
         setPostOpen(!postOpen);
     }
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
 
 
     useEffect(() => {
@@ -213,17 +202,18 @@ export default function Navbar() {
             <AppBar position="fixed" elevation={0} style={style.appBarTransparent}>
                 <Grid container justifyContent="center">
                     <Toolbar sx={style.toolbarStyle}>
-                        <Link href="#">
-                            <img
-                                src={Logo}
-                                alt="Collab Logo"
-                                style={style.logoStyle}
-                            />
-                        </Link>
-
+                        <Box component={Grid} container justifyContent="flex-start" sx={{ width: '100%' }}>
+                            <Link to="/home">
+                                <img
+                                    src={Logo}
+                                    alt="Collab Logo"
+                                    style={style.logoStyle}
+                                />
+                            </Link>
+                        </Box>
                         {!matchMD ? <SideDrawer /> :
                             <>
-                                <Box component={Grid} container justifyContent="center" sx={{ paddingLeft: 20 }}>
+                                <Box component={Grid} container justifyContent="flex-end">
                                     <Search>
                                         <SearchIconWrapper>
                                             <SearchIcon />
@@ -235,46 +225,23 @@ export default function Navbar() {
                                     </Search>
                                 </Box>
                                 <Grid container justifyContent="center" style={style.linkContainer}>
-                                    <ScrollLink
-                                        className="navy"
-                                        smooth={true}
-                                        duration={500}
-                                        to="Home"
-                                    >
-                                        {/* <Button sx={style.btnLinks} >
-                                                Home
-                                            </Button> */}
-                                        <HashLink style={style.btnLinks} to="/">
-                                            <img src={HomeIcon} alt="home" style={style.logoIconStyle} />
-                                        </HashLink>
-                                    </ScrollLink>
-                                    <ScrollLink
-                                        className="navy"
-                                        smooth={true}
-                                        duration={500}
-                                        onClick={handleOpenPost}
-                                    >
-                                        {/* <Button sx={style.btnLinks} > */}
-                                        <HashLink style={style.btnLinks} >
-                                            <img src={FileIcon} alt="home" style={style.logoIconStyle} />
-                                        </HashLink>
-
-                                        {/* </Button> */}
-                                    </ScrollLink>
-                                    <ScrollLink
-                                        className="navy"
-                                        smooth={true}
-                                        duration={500}
-                                        to="About"
-                                    >
-                                        {/* <Button sx={style.btnLinks} >
-                                                About
-                                            </Button> */}
-                                        <HashLink style={style.btnLinks} to="/">
-                                            <img src={UserIcon} alt="home" style={style.logoIconStyle} />
-                                        </HashLink>
-
-                                    </ScrollLink>
+                                    <Box sx={style.btnLinks}>
+                                        <ScrollLink
+                                            className="navy"
+                                            smooth={true}
+                                            duration={500}
+                                            to="Home"
+                                            style={{ paddingTop: 10 }}
+                                        >
+                                            <img src={HomeIcon} alt="home" style={style.logoIconStyle} onClick={() => history.push("/home")}/>
+                                        </ScrollLink>
+                                    </Box>
+                                    <Box onClick={handleOpenPost} sx={style.btnLinks}>
+                                        <img src={FileIcon} alt="addPost" style={style.logoIconFile} />
+                                    </Box>
+                                    <Box sx={style.btnLinks}>
+                                        <img src={UserIcon} alt="profile" style={style.logoIconStyle} onClick={() => history.push("/profile")} />
+                                    </Box>
                                 </Grid>
                             </>
                         }

@@ -2,7 +2,6 @@ import * as actionTypes from '../types';
 
 import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from '@firebase/firestore';
-import { getDocsByCollection } from '../../utils/firebaseUtil'
 
 import { db } from '../../utils/firebase';
 

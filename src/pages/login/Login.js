@@ -16,8 +16,10 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link, useHistory } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
 import Logo from '../../assets/img/png/ColabLogo.png';
+
+import { Helmet } from 'react-helmet';
+import logohelmet from '../../assets/img/png/logoHelmet.png';
 
 const style = {
     root: {
@@ -101,7 +103,6 @@ export default function Login() {
             signInWithEmailAndPassword(auth, values.email, values.password)
                 .then((userCredential) => {
                     // Signed in 
-                    const user = userCredential.user;
                     history.push('/home')
                     //   history.push('/classroom');
                     // ...
@@ -116,6 +117,10 @@ export default function Login() {
 
     return (
         <Box sx={style.root}>
+            <Helmet>
+                <title>Login</title>
+                <link rel="Collaboration Icon" href={logohelmet} />
+            </Helmet>
             <Box component={Grid} container sx={style.loginContainer}>
                 {/* <Box component={Grid} container justifyContent="center">
                     <Typography sx={{ fontSize: { xs: 30, md: 40 }, }}>Welcome Back!</Typography>
@@ -188,11 +193,11 @@ export default function Login() {
                         Sign in
                     </Button>
                 </Grid>
-                <Grid container justifyContent="center">
+                {/* <Grid container justifyContent="center">
                     <Typography sx={{ fontSize: 14, marginBottom: 1, marginTop: 1, fontWeight: '500' }}>
                         -------- or continue with --------
                     </Typography>
-                </Grid>
+                </Grid> */}
             </Box>
         </Box>
     )

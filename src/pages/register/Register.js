@@ -13,14 +13,14 @@ import {
 } from '@mui/material';
 
 import { useDispatch } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
+import { registerInitiate } from '../../redux/actions/userAction';
 
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import { createUser, getDocsByCollection } from '../../utils/firebaseUtil'
-
-import { Link, useHistory } from 'react-router-dom';
-import { registerInitiate } from '../../redux/actions/userAction';
+import { Helmet } from 'react-helmet';
+import logohelmet from '../../assets/img/png/logoHelmet.png';
 
 const style = {
   root: {
@@ -109,6 +109,10 @@ export default function Register() {
 
   return (
     <Box sx={style.root}>
+      <Helmet>
+        <title>Register</title>
+        <link rel="Collaboration Icon" href={logohelmet} />
+      </Helmet>
       <Box component={Grid} container sx={style.loginContainer}>
         <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
           <Typography sx={{ fontSize: { xs: 30, md: 40 } }}>Create Account</Typography>
@@ -192,7 +196,7 @@ export default function Register() {
           <Typography sx={{ fontSize: 14, textAlign: "center", marginTop: 2 }}>
             Already have an account?
             <Link style={style.linkStyle} to="/">
-              Sign up
+              Sign in
             </Link>
           </Typography>
         </Grid>
