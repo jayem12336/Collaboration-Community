@@ -23,7 +23,7 @@ const style = {
     textfieldStyle: {
         border: 'none',
         marginTop: 2,
-        width: 300
+        width: { xs: 245, md: 300 }
     },
     inputText: {
         fontWeight: 'bold'
@@ -113,65 +113,68 @@ export default function PostDialog({ isPostOpen, toggleClass }) {
                 onClose={closeModal}
                 aria-labelledby="responsive-dialog-title"
             >
-                <DialogTitle id="responsive-dialog-title">
-                    {"Create Post"}
-                </DialogTitle>
-                <DialogContent>
-                    <Box component={Grid} container justifyContent="center" sx={style.formContainer}>
-                        <TextField
-                            variant="outlined"
-                            placeholder="Title of Author"
-                            sx={style.textfieldStyle}
-                            fullWidth
-                            onChange={handleChange("title")}
-                            value={values.title}
-                            InputProps={{
-                                sx: style.inputText
-                            }}
-                        />
-                        <TextField
-                            variant="outlined"
-                            placeholder="Description"
-                            sx={style.textfieldStyle}
-                            fullWidth
-                            multiline
-                            minRows={5}
-                            onChange={handleChange("desc")}
-                            value={values.desc}
-                            InputProps={{
-                                sx: style.inputText
-                            }}
-                        />
+                <Box sx={{ width: { xs: 300, md: 353 } }}>
+                    <DialogTitle id="responsive-dialog-title">
+                        {"Create Post"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <Box component={Grid} container justifyContent="center" sx={style.formContainer}>
+                            <TextField
+                                variant="outlined"
+                                placeholder="Title of Author"
+                                sx={style.textfieldStyle}
+                                fullWidth
+                                onChange={handleChange("title")}
+                                value={values.title}
+                                InputProps={{
+                                    sx: style.inputText
+                                }}
 
-                        <Box container justifyContent="center" sx={{marginTop: 2}}>
-                            <Typography>Choose Image Here</Typography>
-                            <form onSubmit={formHandler}>
-                                <input type="file" className="input"/>
-                                <button type="submit">Preview</button>
-                            </form>
-                            <hr />
+                            />
+                            <TextField
+                                variant="outlined"
+                                placeholder="Description"
+                                sx={style.textfieldStyle}
+                                fullWidth
+                                multiline
+                                minRows={5}
+                                onChange={handleChange("desc")}
+                                value={values.desc}
+                                InputProps={{
+                                    sx: style.inputText
+                                }}
+                            />
+
+                            <Box container justifyContent="center" sx={{ marginTop: 2 }}>
+                                <Typography>Choose Image Here</Typography>
+                                <form onSubmit={formHandler}>
+                                    <input type="file" className="input"/>
+                                    <button type="submit" >Preview</button>
+                                </form>
+                                <hr />
+                            </Box>
+                            {
+                                url === "" ? "" :
+                                    <Box component={Grid} container justifyContent="center" sx={{ marginTop: 2 }}>
+                                        <Box
+                                            component="img"
+                                            src={url}
+                                            alt="logo"
+                                            sx={{ width: 150, height: 100 }}
+                                        />
+                                    </Box>
+                            }
                         </Box>
-                        {
-                            url === "" ? "" :
-                                <Box component={Grid} container justifyContent="center" sx={{ marginTop: 2 }}>
-                                    <Box
-                                        component="img"
-                                        src={url}
-                                        alt="logo"
-                                        sx={{ width: 150, height: 100 }}
-                                    />
-                                </Box>
-                        }
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={closeModal} sx={style.btnStyle}>
-                        Cancel
-                    </Button>
-                    <Button onClick={createpost} autoFocus sx={style.btnStyle}>
-                        Post
-                    </Button>
-                </DialogActions>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button autoFocus onClick={closeModal} sx={style.btnStyle}>
+                            Cancel
+                        </Button>
+                        <Button onClick={createpost} autoFocus sx={style.btnStyle}>
+                            Post
+                        </Button>
+                    </DialogActions>
+                </Box>
             </Dialog>
         </div>
     );

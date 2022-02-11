@@ -8,8 +8,6 @@ import {
     Link
 } from '@mui/material';
 
-import { HashLink } from 'react-router-hash-link';
-
 import Scroll from "react-scroll";
 
 import { useTheme } from '@mui/material/styles';

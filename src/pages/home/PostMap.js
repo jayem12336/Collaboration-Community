@@ -28,11 +28,12 @@ const style = {
             sm: 'column',
             xs: 'column'
         },
-        display: 'flex'
+        display: 'flex',
+        padding: 2
     },
     //helper
     marginStyle: {
-        marginTop: 3
+        marginTop: 1
     },
     cardStyle: {
         maxWidth: 345,
@@ -55,6 +56,10 @@ const style = {
         display: "flex",
         padding: 2,
         maxWidth: 450,
+        width: {
+            sm: 400,
+            md: 450,
+        },
         boxShadow: '0 3px 5px 2px rgb(126 126 126 / 30%)',
         borderRadius: 4
     },

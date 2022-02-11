@@ -28,10 +28,11 @@ const style =
         justifyContent: 'center',
         alignItems: 'center',
         height: "100vh",
-        padding: 4
+        padding: 4,
+        marginBottom: { xs: 8},
     },
     ProfileContainer: {
-        marginTop: 10,
+        marginTop: { xs: 18, md: 10 },
         display: "flex",
         padding: 2,
         maxWidth: 380,
@@ -71,7 +72,7 @@ export default function Profile() {
             setUserAuth(authUser)
             setValues({ ...values, email: authUser.email, displayName: authUser.displayName })
         })
-    }, [values])
+    }, [])
 
     const logout = () => {
         dispatch(logoutInitiate(history));

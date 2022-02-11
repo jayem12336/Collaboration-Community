@@ -48,7 +48,6 @@ const style = {
         fontSize: 18,
         textTransform: 'none',
         backgroundColor: '#2791d9',
-        marginTop: '.5',
         marginTop: 2
     },
     textUserField: {
