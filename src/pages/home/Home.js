@@ -4,9 +4,6 @@ import { onSnapshot, collection, orderBy, query } from '@firebase/firestore';
 
 import {
   Box,
-  Button,
-  Typography,
-  Grid,
 } from '@mui/material';
 
 import NavBar from '../../components/navbar/Navbar';
@@ -31,7 +28,6 @@ export default function HomeComponent() {
 
   const [userAuth, setUserAuth] = useState("");
   const [post, setPost] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     auth.onAuthStateChanged((authUser) => {
@@ -46,12 +42,9 @@ export default function HomeComponent() {
   useEffect(() => {
     onSnapshot(queryTimeStamp, (snapshot) => {
       setPost(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-      setLoading(false);
     }
     )
   }, [])
-
-  console.log(post)
 
   return (
     <Box id="Home">

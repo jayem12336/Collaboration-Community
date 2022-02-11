@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../components/navbar/Navbar';
+
+import { updateProfile } from "firebase/auth";
 import {
     Box,
     Button,
@@ -8,7 +10,7 @@ import {
     TextField,
     Avatar
 } from '@mui/material';
-import { auth, db } from '../../utils/firebase';
+import { auth } from '../../utils/firebase';
 import { logoutInitiate } from '../../redux/actions/userAction';
 import { useDispatch } from "react-redux";
 
@@ -52,16 +54,44 @@ export default function Profile() {
 
     const dispatch = useDispatch();
     const history = useHistory();
+    const [disableTextField, setDisableTextField] = useState(true)
     const [userAuth, setUserAuth] = useState("");
+
+    const [values, setValues] = useState({
+        email: "",
+        displayName: ""
+    })
+
+    const handleChange = (prop) => (e) => {
+        setValues({ ...values, [prop]: e.target.value })
+    }
 
     useEffect(() => {
         auth.onAuthStateChanged((authUser) => {
             setUserAuth(authUser)
+            setValues({ ...values, email: authUser.email, displayName: authUser.displayName })
         })
-    }, [])
+    }, [values])
 
     const logout = () => {
         dispatch(logoutInitiate(history));
+    }
+
+    const updateProfileBtn = () => {
+        if (values.email === "" || values.displayName === "") {
+            alert("Please fill up the following fields")
+        }
+        else {
+            updateProfile(userAuth, {
+                displayName: values.displayName,
+                email: values.email,
+            }).then(() => {
+                alert("Successfully updated profile");
+                window.location.reload(false)
+            }).catch((error) => {
+                alert(error);
+            });
+        }
     }
 
     return (
@@ -80,7 +110,8 @@ export default function Profile() {
                     <TextField
                         variant="outlined"
                         fullWidth
-                        value={userAuth.email}
+                        value={values.email}
+                        onChange={handleChange("email")}
                         sx={style.textUserNameField}
                         inputProps={{
                             sx: style.InputStyle
@@ -91,16 +122,21 @@ export default function Profile() {
                     <TextField
                         variant="outlined"
                         fullWidth
-                        value={userAuth.displayName}
+                        value={values.displayName}
+                        onChange={handleChange("displayName")}
                         sx={style.textUserNameField}
                         inputProps={{
                             sx: style.InputStyle
                         }}
-                        disabled={true}
+                        disabled={disableTextField}
                     />
-
                     <Grid container justifyContent="center">
-                        <Button variant="contained" sx={style.btnStyle} fullWidth >
+                        <Button variant="contained" sx={style.btnStyle} fullWidth onClick={() => setDisableTextField(false)}>
+                            Edit Profile
+                        </Button>
+                    </Grid>
+                    <Grid container justifyContent="center" sx={{ marginTop: 2 }}>
+                        <Button variant="contained" sx={style.btnStyle} fullWidth onClick={updateProfileBtn}>
                             Save Profile
                         </Button>
                     </Grid>

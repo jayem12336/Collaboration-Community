@@ -35,8 +35,6 @@ const style = {
 
 export default function PostDialog({ isPostOpen, toggleClass }) {
 
-    const [image, setImage] = useState(null);
-    const [progress, setProgress] = useState(0);
     const [url, setUrl] = useState("")
 
     const [values, setValues] = useState({
@@ -64,12 +62,11 @@ export default function PostDialog({ isPostOpen, toggleClass }) {
                 const prog = Math.round(
                     (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                 );
-                setProgress(prog);
+                return prog;
             },
             (error) => console.log(error),
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    console.log("File available at", downloadURL);
                     setUrl(downloadURL)
                 });
             }
@@ -98,22 +95,16 @@ export default function PostDialog({ isPostOpen, toggleClass }) {
                 image: url
             });
             setValues({ ...values, title: '', desc: '' })
-            setImage(null);
             toggleClass();
-            setProgress(0)
             setUrl("")
         }
     }
 
     const closeModal = () => {
         setValues({ ...values, title: '', desc: '' });
-        setImage(null);
         toggleClass();
-        setProgress(0)
         setUrl("")
     }
-
-    console.log(image)
 
     return (
         <div>

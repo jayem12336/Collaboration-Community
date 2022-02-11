@@ -39,7 +39,6 @@ export const registerInitiate = (userData, history) => (dispatch) => {
                 // ..
             });
     } catch (err) {
-        console.error(err)
     }
 }
 
@@ -67,7 +66,6 @@ export const loginInitiate = (email, password, history) => (dispatch) => {
             });
 
     } catch (err) {
-        console.error(err)
     }
 }
 
@@ -75,16 +73,6 @@ export const setUser = (user) => async (dispatch) => {
     try {
         await dispatch({ type: actionTypes.SET_USER, payload: user });
     } catch (err) {
-        console.error(err)
-    }
-}
-
-export const getUserId = () => async (dispatch) => {
-    try {
-        const userId = window.sessionStorage.getItem('id')
-        await dispatch({ type: actionTypes.SET_USER, payload: JSON.parse(userId) });
-    } catch (err) {
-        console.error(err)
     }
 }
 
@@ -107,7 +95,6 @@ export const logoutInitiate = (user, history) => async (dispatch) => {
             // An error happened.
         });
     } catch (err) {
-        console.error(err)
     }
 }
 

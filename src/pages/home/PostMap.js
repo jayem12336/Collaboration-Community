@@ -106,7 +106,7 @@ export default function PostMap({ postowner, timestamp, posttitle, postdesc, pos
         comment: '',
     });
 
-    const [totalDoclNumbers, setTotalDoclNumbers] = useState(0);
+    // const [totalDoclNumbers, setTotalDoclNumbers] = useState(0);
 
     const [commentList, setCommentList] = useState([]);
 
@@ -132,7 +132,7 @@ export default function PostMap({ postowner, timestamp, posttitle, postdesc, pos
     useEffect(() => {
         onSnapshot(queryTimeStamp, (snapshot) => {
             setCommentList(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-            setTotalDoclNumbers(snapshot.docs.length);
+            // setTotalDoclNumbers(snapshot.docs.length);
         }
         )
     }, [])
@@ -193,14 +193,16 @@ export default function PostMap({ postowner, timestamp, posttitle, postdesc, pos
                             <Typography sx={{ fontWeight: "bold", textAlign: "center" }}>{posttitle}</Typography>
                             <Typography sx={{ textAlign: "center" }}>{postdesc}</Typography>
                         </Grid>
-                        <Box component={Grid} container justifyContent="center" sx={{ marginTop: 2, marginBottom: 2 }}>
-                            <Box
-                                component="img"
-                                src={postimage}
-                                alt="logo"
-                                sx={style.postimageStyle}
-                            />
-                        </Box>
+                        {postimage === "" ? "" :
+                            <Box component={Grid} container justifyContent="center" sx={{ marginTop: 2, marginBottom: 2 }}>
+                                <Box
+                                    component="img"
+                                    src={postimage}
+                                    alt="logo"
+                                    sx={style.postimageStyle}
+                                />
+                            </Box>
+                        }
                         <Box component={Grid} container justifyContent="center">
                             <Button fullWidth sx={{ borderRadius: 2, border: "0.5px solid black" }} onClick={() => setShowInput(!showInput)}>
                                 Add Comment

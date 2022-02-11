@@ -97,6 +97,9 @@ export default function Register() {
     if (!values.email || !values.password || !values.cpass || !values.fullName) {
       alert("please fill up the following fields")
     }
+    else if(values.password !== values.cpass) {
+      alert("password does not match")
+    }
     else {
       const data = {
         displayName: values.fullName,

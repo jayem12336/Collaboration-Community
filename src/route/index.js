@@ -16,6 +16,7 @@ import PrivateRoute from './privateroute';
 import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
 import Register from '../pages/register/Register';
+import notFound from '../pages/notFound'
 
 import theme from '../utils/theme';
 import { createTheme, ThemeProvider, Box } from '@mui/material';
@@ -43,7 +44,6 @@ export default function RouterComponent(props) {
         })
     }, [dispatch])
 
-    console.log(user);
     if (values.isLoading) {
         return (
             <Box sx={{
@@ -104,6 +104,7 @@ export default function RouterComponent(props) {
                         path="/profile"
                         isAuthenticated={values.isAuthenticated}
                     />
+                    <Route component={notFound} path='/' />
                 </Switch>
             </Router>
         </ThemeProvider>
